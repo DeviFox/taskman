@@ -1,22 +1,23 @@
 <template>
-  <div class="navbar"></div>
-  <nav> Cruello </nav>
+  <div class="navbar">NedoTrello</div>
+
 </template>
 
 <script>
 export default {
-name: "Navbar.vue"
+  name: "Navbar.vue"
 }
 </script>
 
 <style scoped lang="scss">
-#navbar {
-  width: 100%;
-  display: inline-block;
-}
-
-nav {
+.navbar {
+  width:            100%;
+  display:          inline-block;
   background-color: #42b983;
-  height: 30px;
+  height:           40px;
+  line-height:      40px;
+  font-weight:      bold;
+  color:            white;
 }
 </style>
+
