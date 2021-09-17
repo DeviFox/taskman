@@ -15,6 +15,10 @@
              @dragstart="itemDrag($event, item)"
         >
           {{ item.title }}
+          <hr style="background-color:ghostwhite;
+          height:1px;
+          margin: 5px 0 10px 0">
+          {{ item.text }}
         </div>
       </div>
       <div class="drop-zone"
@@ -31,6 +35,10 @@
              @dragstart="itemDrag($event, item)"
         >
           {{ item.title }}
+          <hr style="background-color:ghostwhite;
+          height:1px;
+          margin:  5px 0 10px 0">
+          {{ item.text }}
         </div>
       </div>
       <div class="drop-zone"
@@ -47,6 +55,10 @@
              @dragstart="itemDrag($event, item)"
         >
           {{ item.title }}
+          <hr style="background-color:ghostwhite;
+          height:1px;
+          margin: 5px 0 10px 0">
+          {{ item.text }}
         </div>
       </div>
     </div>
@@ -63,12 +75,12 @@ export default {
   },
   setup() {
     const items    = ref([
-      {id: 0, title: 'Задача', list: 1},
-      {id: 1, title: 'Вторая задача', list: 1},
-      {id: 2, title: 'Тоже задача', list: 1},
-      {id: 3, title: 'Еще задача', list: 1},
-      {id: 4, title: 'Маленькая задача', list: 1},
-      {id: 5, title: 'Последняя задача', list: 1},
+      {id: 0, title: 'Задача', text: 'Требуется создать отображение приложение «Таск-менеджер» с возможностью отслеживания текущих задач.',                                         list: 1},
+      {id: 1, title: 'Вторая задача', text: 'С возможностью отслеживания текущих задач',                                                                                            list: 1},
+      {id: 2, title: 'Тоже задача', text: 'Приложение должно предоставлять графический интерфейс для отображения задач. Карточка задачи характеризуется следующими атрибутами:',    list: 1},
+      {id: 3, title: 'Еще задача', text: 'Для реализации приложения нужно использовать Vue , SCSS.',                                                                                list: 1},
+      {id: 4, title: 'Маленькая задача', text: 'Приложение должно быть в виде 3 дорожек(колонок) «Создана», «В работе», «Завершена» в каждой из которой находятся карточки задач.', list: 1},
+      {id: 5, title: 'Последняя задача', text: 'Данные для карточек заполнить самостоятельно',                                                                                      list: 1},
 
     ])
     const getList  = (list) => {
@@ -78,7 +90,7 @@ export default {
       console.log(item)
       event.dataTransfer.dropEffect    = 'move'
       event.dataTransfer.effectAllowed = 'move'
-      event.dataTransfer.setData('itemID', item.id) //Передает id элемента в itemID
+      event.dataTransfer.setData('itemID', item.id)
 
     }
     const itemDrop = (event, list) => {
@@ -105,8 +117,7 @@ export default {
 
 .wrapper {
   justify-content: center;
-  width:           100%;
-  margin:          auto;
+
   display:         flex;
   flex-direction:  row;
   flex-wrap:       wrap;
@@ -118,7 +129,7 @@ export default {
   justify-content:  center;
   height:           100%;
   width:            200px;
-  margin:           0 10px;
+  margin:           10px 10px;
   display:          flex;
   flex-direction:   column;
   flex-wrap:        wrap;
@@ -141,6 +152,8 @@ export default {
     background-color: #42b983;
   }
 
+
+
 }
 
 .drag-item {
@@ -150,6 +163,7 @@ export default {
   padding:          5px;
   min-width:        150px;
   background-color: #42b983;
+  font-size: 15px;
 
 }
 
