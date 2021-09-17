@@ -1,30 +1,107 @@
 <template>
   <div class="container">
     <div class="wrapper">
-      <div class="item">Создана</div>
-      <div class="item">В работе</div>
-      <div class="item">Завершена</div>
+      <div class="drop-zone"
+           @drop="itemDrop($event, 1)"
+           @dragenter.prevent
+           @dragover.prevent
+      >
+        <p>Создана</p>
+        <hr>
+        <div v-for="item in getList(1)"
+             :key="item.id"
+             class="drag-item"
+             draggable="true"
+             @dragstart="itemDrag($event, item)"
+        >
+          {{ item.title }}
+        </div>
+      </div>
+      <div class="drop-zone"
+           @drop="itemDrop($event, 2)"
+           @dragenter.prevent
+           @dragover.prevent
+      >
+        <p>В работе</p>
+        <hr>
+        <div v-for="item in getList(2)"
+             :key="item.id"
+             class="drag-item"
+             draggable="true"
+             @dragstart="itemDrag($event, item)"
+        >
+          {{ item.title }}
+        </div>
+      </div>
+      <div class="drop-zone"
+           @drop="itemDrop($event, 3)"
+           @dragenter.prevent
+           @dragover.prevent
+      >
+        <p>Завершена</p>
+        <hr>
+        <div v-for="item in getList(3)"
+             :key="item.id"
+             class="drag-item"
+             draggable="true"
+             @dragstart="itemDrag($event, item)"
+        >
+          {{ item.title }}
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import {ref} from 'vue';
+
 export default {
   name:  'BoardPage',
   props: {
     msg: String
-  }
+  },
+  setup() {
+    const items    = ref([
+      {id: 0, title: 'Задача', list: 1},
+      {id: 1, title: 'Вторая задача', list: 1},
+      {id: 2, title: 'Тоже задача', list: 1},
+      {id: 3, title: 'Еще задача', list: 1},
+      {id: 4, title: 'Маленькая задача', list: 1},
+      {id: 5, title: 'Последняя задача', list: 1},
+
+    ])
+    const getList  = (list) => {
+      return items.value.filter((item) => item.list == list)
+    }
+    const itemDrag = (event, item) => {
+      console.log(item)
+      event.dataTransfer.dropEffect    = 'move'
+      event.dataTransfer.effectAllowed = 'move'
+      event.dataTransfer.setData('itemID', item.id) //Передает id элемента в itemID
+
+    }
+    const itemDrop = (event, list) => {
+      const itemID = event.dataTransfer.getData('itemID')
+      const item   = items.value.find((item) => item.id == itemID)
+      item.list    = list
+    };
+
+
+    return {getList, itemDrop, itemDrag}
+  },
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+
 <style scoped lang="scss">
 
 .container {
   margin: 50px 0;
   width:  100%;
-  height: 300px;
+  height: 100%;
 }
+
 
 .wrapper {
   justify-content: center;
@@ -33,18 +110,47 @@ export default {
   display:         flex;
   flex-direction:  row;
   flex-wrap:       wrap;
-
-  height:          100%;
+  min-height:      50px;
 
 }
 
-.item {
-  flex-shrink:      0;
+.drop-zone {
+  justify-content:  center;
   height:           100%;
-  margin:           10px 10px;
-
   width:            200px;
+  margin:           0 10px;
+  display:          flex;
+  flex-direction:   column;
+  flex-wrap:        wrap;
+  min-height:       50px;
+  background-color: ghostwhite;
+  flex-shrink:      0;
+  border-radius:    5px;
+
+  p {
+    font-size: 20px;
+    margin:    10px 10px;
+    position:  relative;
+  }
+
+  hr {
+    margin:           0 0 10px 0;
+    width:            100%;
+    border:           none;
+    height:           2px;
+    background-color: #42b983;
+  }
+
+}
+
+.drag-item {
+  border-radius:    5px;
+  height:           100%;
+  margin:           5px 10px;
+  padding:          5px;
+  min-width:        150px;
   background-color: #42b983;
+
 }
 
 </style>
