@@ -23,11 +23,16 @@
              draggable="true"
              @dragstart="itemDrag($event, item)"
         >
+
+          Статус: {{ item.status }} <br>
+          <hr>
           {{ item.title }}
           <hr class="title-hr">
           {{ item.text }}
           <hr class="title-hr">
-          {{item.author}} | {{item.date}}
+          Автор: {{ item.author }}
+          <hr>
+          Дата добавления: {{ item.date }}
 
         </div>
       </div>
@@ -44,11 +49,15 @@
              draggable="true"
              @dragstart="itemDrag($event, item)"
         >
+          Статус: {{ item.status }} <br>
+          <hr>
           {{ item.title }}
           <hr class="title-hr">
           {{ item.text }}
           <hr class="title-hr">
-          {{item.author}} | {{item.date}}
+          Автор: {{ item.author }}
+          <hr>
+          Дата добавления: {{ item.date }}
         </div>
       </div>
       <div class="drop-zone"
@@ -64,11 +73,15 @@
              draggable="true"
              @dragstart="itemDrag($event, item)"
         >
+          Статус: {{ item.status }} <br>
+          <hr>
           {{ item.title }}
           <hr class="title-hr">
           {{ item.text }}
           <hr class="title-hr">
-          {{item.author}} | {{item.date}}
+          Автор: {{ item.author }}
+          <hr>
+          Дата добавления: {{ item.date }}
         </div>
       </div>
     </div>
@@ -86,18 +99,19 @@ export default {
     new Date()
     return {
       items:   [
-        {id: 0, title: 'Задача', text: 'Требуется создать отображение приложение «Таск-менеджер» с возможностью отслеживания текущих задач.', author:'Admin', list: 1},
-        {id: 1, title: 'Вторая задача', text: 'С возможностью отслеживания текущих задач', author:'Admin 2', list: 2},
-        {id: 2, title: 'Тоже задача', text: 'Приложение должно предоставлять графический интерфейс для отображения задач. Карточка задачи характеризуется следующими атрибутами:', author:'Не я', list: 2},
-        {id: 3, title: 'Еще задача', text: 'Для реализации приложения нужно использовать Vue , SCSS.', author:'Test', list: 3},
-        {id: 4, title: 'Маленькая задача', text: 'Приложение должно быть в виде 3 дорожек(колонок) «Создана», «В работе», «Завершена» в каждой из которой находятся карточки задач.', author:'Ну уж точно не я', list: 3},
-        {id: 5, title: 'Последняя задача', text: 'Данные для карточек заполнить самостоятельно', author:'God', list: 1},
+        {id: 0, title: 'Задача 1', status: '', text: 'Требуется создать отображение приложение «Таск-менеджер» с возможностью отслеживания текущих задач.', author: 'Admin', date: '2021-05-21', list: 1},
+        {id: 1, title: 'Вторая задача', status: '', text: 'С возможностью отслеживания текущих задач', author: 'Admin 2', date: '2021-05-12', list: 2},
+        {id: 2, title: 'Тоже задача', status: '', text: 'Приложение должно предоставлять графический интерфейс для отображения задач. Карточка задачи характеризуется следующими атрибутами:', author: 'Не я', date: '2021-08-01', list: 2},
+        {id: 3, title: 'Еще задача', status: '', text: 'Для реализации приложения нужно использовать Vue , SCSS.', author: 'Test', date: '2021-07-11', list: 3},
+        {id: 4, title: 'Маленькая задача', status: '', text: 'Приложение должно быть в виде 3 дорожек(колонок) «Создана», «В работе», «Завершена» в каждой из которой находятся карточки задач.', author: 'Ну уж точно не я', date: '2021-09-14', list: 3},
+        {id: 5, title: 'Последняя задача', status: '', text: 'Данные для карточек заполнить самостоятельно', author: 'God', date: '2021-07-17', list: 1},
       ],
       newCard: {
-        title: '',
-        text:  '',
-        author:'',
-        date: '',
+        title:  '',
+        status: '',
+        text:   '',
+        author: '',
+        date:   '',
       }
     };
   },
@@ -117,15 +131,26 @@ export default {
       const itemID = event.dataTransfer.getData('itemID')
       const item   = this.items.find((item) => item.id == itemID)
       item.list    = list
+      if (item.list == 1) {
+        item.status = "Создана"
+      }
+      else if (item.list == 2) {
+        item.status = "В работе"
+      }
+      else if (item.list == 3) {
+        item.status = "Завершена"
+      }
+
     },
     addTask() {
-      this.items.push({id: this.items.length, title: this.newCard.title, text: this.newCard.text, author: this.newCard.author, date:this.newCard.date, list: 1})
-      this.newCard.title = '';
-      this.newCard.text  = '';
-      this.newCard.author ='';
-      this.newCard.date ='';
+      this.items.push({id: this.items.length, title: this.newCard.title, status: this.newCard.status, text: this.newCard.text, author: this.newCard.author, date: this.newCard.date, list: 1})
+      this.newCard.title  = '';
+      this.newCard.text   = '';
+      this.newCard.author = '';
+      this.newCard.date   = '';
+      this.newCard.status = '';
     },
-  },
+  }
 }
 </script>
 
@@ -137,28 +162,30 @@ export default {
   width:  100%;
   height: 100%;
 }
-.add-window{
-  position: absolute;
-  display: flex;
+
+.add-window {
+  position:       absolute;
+  display:        flex;
   flex-direction: column;
-  left: 0;
-  margin: 10px;
+  left:           0;
+  margin:         10px;
 }
+
 .add-form {
-  height: 30px;
-  margin-top: 5px;
+  height:        30px;
+  margin-top:    5px;
   border-radius: 6px;
-  border-color: #42b983;
+  border-color:  #42b983;
 
 }
 
 .add-btn {
-  margin-left: 70px;
-  margin-top: 5px;
-  height: 26px;
-  width:  26px;
+  margin-left:   70px;
+  margin-top:    5px;
+  height:        26px;
+  width:         26px;
   border-radius: 7px;
-  border-color: #42b983;
+  border-color:  #42b983;
 }
 
 .wrapper {
@@ -211,13 +238,14 @@ export default {
   min-width:        150px;
   background-color: #42b983;
   font-size:        15px;
-  width: 170px;
-  word-wrap: break-word;
+  width:            170px;
+  word-wrap:        break-word;
 
-  title-hr {
+  hr {
     background-color: ghostwhite;
+    border:           none;
     height:           1px;
-    margin:           5px 0 10px 0
+
   }
 }
 </style>
