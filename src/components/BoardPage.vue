@@ -131,13 +131,13 @@ export default {
       const itemID = event.dataTransfer.getData('itemID')
       const item   = this.items.find((item) => item.id == itemID)
       item.list    = list
-      if (item.list == 1) {
+      if (list == 1) {
         item.status = "Создана"
       }
-      else if (item.list == 2) {
+      else if (list == 2) {
         item.status = "В работе"
       }
-      else if (item.list == 3) {
+      else if (list == 3) {
         item.status = "Завершена"
       }
 
@@ -164,6 +164,7 @@ export default {
 }
 
 .add-window {
+  background-color: white;
   position:       absolute;
   display:        flex;
   flex-direction: column;
