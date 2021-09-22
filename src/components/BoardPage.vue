@@ -115,33 +115,49 @@ export default {
       }
     };
   },
+  mounted() {
+    if (localStorage.getItem('items')) {
+      try {
+        this.items = JSON.parse(localStorage.getItem('items'));
+      } catch (e) {
+        localStorage.getItem('items');
+      }
+    }
 
+  },
 
   methods: {
     getList(list) {
-      return this.items.filter((item) => item.list == list)
+      return this.items.filter((item) => item.list === list)
     },
+
+
     itemDrag(event, item) {
       console.log(item)
       event.dataTransfer.dropEffect    = 'move'
       event.dataTransfer.effectAllowed = 'move'
       event.dataTransfer.setData('itemID', item.id)
+      this.saveTask()
     },
+
+
     itemDrop(event, list) {
       const itemID = event.dataTransfer.getData('itemID')
-      const item   = this.items.find((item) => item.id == itemID)
+      const item   = this.items.find((item) => item.id === +itemID)
       item.list    = list
-      if (list == 1) {
+      if (list === 1) {
         item.status = "Создана"
       }
-      else if (list == 2) {
+      else if (list === 2) {
         item.status = "В работе"
       }
-      else if (list == 3) {
+      else if (list === 3) {
         item.status = "Завершена"
       }
-
+      this.saveTask()
     },
+
+
     addTask() {
       this.items.push({id: this.items.length, title: this.newCard.title, status: this.newCard.status, text: this.newCard.text, author: this.newCard.author, date: this.newCard.date, list: 1})
       this.newCard.title  = '';
@@ -149,8 +165,17 @@ export default {
       this.newCard.author = '';
       this.newCard.date   = '';
       this.newCard.status = '';
+      this.saveTask()
     },
-  }
+
+
+    saveTask(){
+      const parsed = JSON.stringify(this.items);
+      localStorage.setItem('items', parsed)
+    }
+  },
+
+
 }
 </script>
 
@@ -183,8 +208,8 @@ export default {
 .add-btn {
   margin-left:   70px;
   margin-top:    5px;
-  height:        26px;
-  width:         26px;
+  height:        30px;
+  width:         30px;
   border-radius: 7px;
   border-color:  #42b983;
 }
@@ -203,7 +228,7 @@ export default {
 .drop-zone {
   justify-content:  center;
   height:           100%;
-  width:            200px;
+  width:            250px;
   margin:           10px 10px;
   display:          flex;
   flex-direction:   column;
@@ -236,10 +261,10 @@ export default {
   height:           100%;
   margin:           5px 10px;
   padding:          5px;
-  min-width:        150px;
+
   background-color: #42b983;
   font-size:        15px;
-  width:            170px;
+  width:            220px;
   word-wrap:        break-word;
 
   hr {
