@@ -3,13 +3,14 @@
 
     <div class="wrapper">
       <div class="add-window">
-        <input class="add-form" v-model="newCard.title" placeholder="Название">
-        <input class="add-form" v-model="newCard.text" placeholder="Текст">
+        <input id="add-form" class="add-form" v-model="newCard.title" placeholder="Название">
+        <input class="add-form" v-model="newCard.text" placeholder="Описание">
         <input class="add-form" v-model="newCard.author" placeholder="Автор">
         <input class="add-form" v-model="newCard.date" type="date">
         <button class="add-btn" v-on:click="addTask">+</button>
       </div>
 
+      <!--   1 Колонка   -->
       <div class="drop-zone"
            @drop="itemDrop($event, 1)"
            @dragenter.prevent
@@ -31,11 +32,13 @@
           {{ item.text }}
           <hr class="title-hr">
           Автор: {{ item.author }}
-          <hr>
-          Дата добавления: {{ item.date }}
+          <br>
+          <span v-if="item.date !==''">  Дата добавления: {{dateFilter(item.date) }}</span>
 
         </div>
       </div>
+
+      <!--   2 Колонка   -->
       <div class="drop-zone"
            @drop="itemDrop($event, 2)"
            @dragenter.prevent
@@ -56,10 +59,13 @@
           {{ item.text }}
           <hr class="title-hr">
           Автор: {{ item.author }}
-          <hr>
-          Дата добавления: {{ item.date }}
+          <br>
+          <span v-if="item.date"> Дата добавления: {{dateFilter(item.date)}} </span> <br>
+          <span v-if="item.startdate"> Дата начала: {{dateFilter(item.startdate)}} </span>
         </div>
       </div>
+
+<!--   3 Колонка   -->
       <div class="drop-zone"
            @drop="itemDrop($event, 3)"
            @dragenter.prevent
@@ -79,9 +85,11 @@
           <hr class="title-hr">
           {{ item.text }}
           <hr class="title-hr">
-          Автор: {{ item.author }}
-          <hr>
-          Дата добавления: {{ item.date }}
+          Автор: {{ item.author }}<br>
+
+          <span v-if="item.date"> Дата добавления: {{this.dateFilter(item.date) }} </span> <br>
+          <span v-if="item.finishdate"> Дата завершения: {{this.dateFilter(item.finishdate) }} </span> <br>
+           Затрачено времени: {{item.usedtime}} часов
         </div>
       </div>
     </div>
@@ -90,31 +98,30 @@
 
 <script>
 
+let moment = require('moment');
+moment.locale('ru');
+
 export default {
   name:  'BoardPage',
   props: {
     msg: String
   },
   data() {
-    new Date()
     return {
-      items:   [
-        {id: 0, title: 'Задача 1', status: '', text: 'Требуется создать отображение приложение «Таск-менеджер» с возможностью отслеживания текущих задач.', author: 'Admin', date: '2021-05-21', list: 1},
-        {id: 1, title: 'Вторая задача', status: '', text: 'С возможностью отслеживания текущих задач', author: 'Admin 2', date: '2021-05-12', list: 2},
-        {id: 2, title: 'Тоже задача', status: '', text: 'Приложение должно предоставлять графический интерфейс для отображения задач. Карточка задачи характеризуется следующими атрибутами:', author: 'Не я', date: '2021-08-01', list: 2},
-        {id: 3, title: 'Еще задача', status: '', text: 'Для реализации приложения нужно использовать Vue , SCSS.', author: 'Test', date: '2021-07-11', list: 3},
-        {id: 4, title: 'Маленькая задача', status: '', text: 'Приложение должно быть в виде 3 дорожек(колонок) «Создана», «В работе», «Завершена» в каждой из которой находятся карточки задач.', author: 'Ну уж точно не я', date: '2021-09-14', list: 3},
-        {id: 5, title: 'Последняя задача', status: '', text: 'Данные для карточек заполнить самостоятельно', author: 'God', date: '2021-07-17', list: 1},
-      ],
+      items:   [],
       newCard: {
         title:  '',
         status: '',
         text:   '',
         author: '',
         date:   '',
+        startdate:'',
       }
     };
   },
+
+
+
   mounted() {
     if (localStorage.getItem('items')) {
       try {
@@ -127,6 +134,17 @@ export default {
   },
 
   methods: {
+    dateFilter(value, format = "date") {
+      const opt = {};
+      if (format.includes("date")) {
+        (opt.day = "2-digit"), (opt.month = "long"), (opt.year = "numeric");
+      }
+      if (format.includes("time")) {
+        (opt.hour = "2-digit"), (opt.minute = "2-digit"), (opt.second = "2-digit");
+      }
+      return new Intl.DateTimeFormat("ru-RU", opt).format(new Date(value));
+    },
+
     getList(list) {
       return this.items.filter((item) => item.list === list)
     },
@@ -145,25 +163,39 @@ export default {
       const itemID = event.dataTransfer.getData('itemID')
       const item   = this.items.find((item) => item.id === +itemID)
       item.list    = list
+
       if (list === 1) {
         item.status = "Создана"
       }
       else if (list === 2) {
         item.status = "В работе"
+        item.startdate = new Date();
       }
       else if (list === 3) {
         item.status = "Завершена"
+        item.finishdate = new Date();
+        item.usedtime = this.usedtime( new Date(item.finishdate), new Date(item.startdate));
       }
       this.saveTask()
     },
 
+    usedtime(dt2, dt1) {
+
+      var diff = (dt2.getTime() - dt1.getTime()) / 1000;
+      diff /= (60 * 60);
+      return Math.abs(Math.round(diff));
+
+    },
 
     addTask() {
-      this.items.push({id: this.items.length, title: this.newCard.title, status: this.newCard.status, text: this.newCard.text, author: this.newCard.author, date: this.newCard.date, list: 1})
+      this.items.push({id: this.items.length, title: this.newCard.title, status: this.newCard.status, text: this.newCard.text, author: this.newCard.author, date: new Date(this.newCard.date), list: 1})
       this.newCard.title  = '';
       this.newCard.text   = '';
       this.newCard.author = '';
       this.newCard.date   = '';
+      this.newCard.startdate = '';
+      this.newCard.usedtime = '';
+      this.newCard.finishdate = '';
       this.newCard.status = '';
       this.saveTask()
     },
@@ -172,6 +204,11 @@ export default {
     saveTask(){
       const parsed = JSON.stringify(this.items);
       localStorage.setItem('items', parsed)
+    },
+
+    format(date) {
+      return moment(date).format('DD.MM.YYYY');
+
     }
   },
 
