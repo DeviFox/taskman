@@ -61,7 +61,7 @@
           Автор: {{ item.author }}
           <br>
           <span v-if="item.date"> Дата добавления: {{dateFilter(item.date)}} </span> <br>
-          <span v-if="item.startdate"> Дата начала: {{dateFilter(item.startdate)}} </span>
+          <span v-if="item.startDate"> Дата начала: {{dateFilter(item.startDate)}} </span>
         </div>
       </div>
 
@@ -88,8 +88,8 @@
           Автор: {{ item.author }}<br>
 
           <span v-if="item.date"> Дата добавления: {{this.dateFilter(item.date) }} </span> <br>
-          <span v-if="item.finishdate"> Дата завершения: {{this.dateFilter(item.finishdate) }} </span> <br>
-           Затрачено времени: {{item.usedtime}} часов
+          <span v-if="item.finishDate"> Дата завершения: {{this.dateFilter(item.finishDate) }} </span> <br>
+           Затрачено времени: {{item.usedTime}} часов
         </div>
       </div>
     </div>
@@ -98,8 +98,6 @@
 
 <script>
 
-let moment = require('moment');
-moment.locale('ru');
 
 export default {
   name:  'BoardPage',
@@ -115,7 +113,7 @@ export default {
         text:   '',
         author: '',
         date:   '',
-        startdate:'',
+        startDate:'',
       }
     };
   },
@@ -169,17 +167,17 @@ export default {
       }
       else if (list === 2) {
         item.status = "В работе"
-        item.startdate = new Date();
+        item.startDate = new Date();
       }
       else if (list === 3) {
         item.status = "Завершена"
-        item.finishdate = new Date();
-        item.usedtime = this.usedtime( new Date(item.finishdate), new Date(item.startdate));
+        item.finishDate = new Date();
+        item.usedTime = this.usedTime( new Date(item.finishDate), new Date(item.startDate));
       }
       this.saveTask()
     },
 
-    usedtime(dt2, dt1) {
+    usedTime(dt2, dt1) {
 
       var diff = (dt2.getTime() - dt1.getTime()) / 1000;
       diff /= (60 * 60);
@@ -193,9 +191,9 @@ export default {
       this.newCard.text   = '';
       this.newCard.author = '';
       this.newCard.date   = '';
-      this.newCard.startdate = '';
-      this.newCard.usedtime = '';
-      this.newCard.finishdate = '';
+      this.newCard.startDate = '';
+      this.newCard.usedTime = '';
+      this.newCard.finishDate = '';
       this.newCard.status = '';
       this.saveTask()
     },
@@ -205,11 +203,6 @@ export default {
       const parsed = JSON.stringify(this.items);
       localStorage.setItem('items', parsed)
     },
-
-    format(date) {
-      return moment(date).format('DD.MM.YYYY');
-
-    }
   },
 
 
