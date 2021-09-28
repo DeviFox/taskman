@@ -2,14 +2,7 @@
   <div class="container">
 
     <div class="wrapper">
-      <div class="add-window">
-        <input id="add-form" class="add-form" v-model="newCard.title" placeholder="Название">
-        <input class="add-form" v-model="newCard.text" placeholder="Описание">
-        <input class="add-form" v-model="newCard.author" placeholder="Автор">
-        <input class="add-form" v-model="newCard.date" type="date">
-        <button class="add-btn" v-on:click="addTask">+</button>
-      </div>
-
+      <AddForm/>
       <!--   1 Колонка   -->
       <div class="drop-zone"
            @drop="itemDrop($event, 1)"
@@ -97,42 +90,33 @@
 </template>
 
 <script>
-
+import AddForm from './AddForm';
 
 export default {
   name:  'BoardPage',
-  props: {
-    msg: String
-  },
-  data() {
-    return {
-      items:   [],
-      newCard: {
-        title:  '',
-        status: '',
-        text:   '',
-        author: '',
-        date:   '',
-        startDate:'',
-      }
-    };
-  },
-
-
-
+  // props: {
+  //   msg: String
+  // },
+  // data() {
+  //   return {
+  //     items:   [],
+  //     newCard: {
+  //       title:  '',
+  //       status: '',
+  //       text:   '',
+  //       author: '',
+  //       date:   '',
+  //       startDate:'',
+  //     }
+  //   };
+  // },
+  components:{AddForm},
   mounted() {
-    if (localStorage.getItem('items')) {
-      try {
-        this.items = JSON.parse(localStorage.getItem('items'));
-      } catch (e) {
-        localStorage.getItem('items');
-      }
-    }
 
   },
 
   methods: {
-    dateFilter(value, format = "date") {
+    dateFilter(value, format = "date") {                                              //Фильтр для даты
       const opt = {};
       if (format.includes("date")) {
         (opt.day = "2-digit"), (opt.month = "long"), (opt.year = "numeric");
@@ -143,9 +127,9 @@ export default {
       return new Intl.DateTimeFormat("ru-RU", opt).format(new Date(value));
     },
 
-    getList(list) {
-      return this.items.filter((item) => item.list === list)
-    },
+    // getList(list) {
+    //   return this.items.filter((item) => item.list === list)
+    // },
 
 
     itemDrag(event, item) {
@@ -153,9 +137,7 @@ export default {
       event.dataTransfer.dropEffect    = 'move'
       event.dataTransfer.effectAllowed = 'move'
       event.dataTransfer.setData('itemID', item.id)
-      this.saveTask()
     },
-
 
     itemDrop(event, list) {
       const itemID = event.dataTransfer.getData('itemID')
@@ -174,38 +156,29 @@ export default {
         item.finishDate = new Date();
         item.usedTime = this.usedTime( new Date(item.finishDate), new Date(item.startDate));
       }
-      this.saveTask()
+
     },
 
     usedTime(dt2, dt1) {
 
-      var diff = (dt2.getTime() - dt1.getTime()) / 1000;
+      let diff = (dt2.getTime() - dt1.getTime()) / 1000;
       diff /= (60 * 60);
       return Math.abs(Math.round(diff));
 
     },
 
-    addTask() {
-      this.items.push({id: this.items.length, title: this.newCard.title, status: this.newCard.status, text: this.newCard.text, author: this.newCard.author, date: new Date(this.newCard.date), list: 1})
-      this.newCard.title  = '';
-      this.newCard.text   = '';
-      this.newCard.author = '';
-      this.newCard.date   = '';
-      this.newCard.startDate = '';
-      this.newCard.usedTime = '';
-      this.newCard.finishDate = '';
-      this.newCard.status = '';
-      this.saveTask()
-    },
-
-
-    saveTask(){
-      const parsed = JSON.stringify(this.items);
-      localStorage.setItem('items', parsed)
-    },
+    // addTask() {
+    //   this.items.push({id: this.items.length, title: this.newCard.title, status: this.newCard.status, text: this.newCard.text, author: this.newCard.author, date: new Date(this.newCard.date), list: 1})
+    //   this.newCard.title  = '';
+    //   this.newCard.text   = '';
+    //   this.newCard.author = '';
+    //   this.newCard.date   = '';
+    //   this.newCard.startDate = '';
+    //   this.newCard.usedTime = '';
+    //   this.newCard.finishDate = '';
+    //   this.newCard.status = '';
+    // },
   },
-
-
 }
 </script>
 
@@ -216,32 +189,6 @@ export default {
   margin: 50px 0;
   width:  100%;
   height: 100%;
-}
-
-.add-window {
-  background-color: white;
-  position:       absolute;
-  display:        flex;
-  flex-direction: column;
-  left:           0;
-  margin:         10px;
-}
-
-.add-form {
-  height:        30px;
-  margin-top:    5px;
-  border-radius: 6px;
-  border-color:  #42b983;
-
-}
-
-.add-btn {
-  margin-left:   70px;
-  margin-top:    5px;
-  height:        30px;
-  width:         30px;
-  border-radius: 7px;
-  border-color:  #42b983;
 }
 
 .wrapper {
