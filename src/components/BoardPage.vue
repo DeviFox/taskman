@@ -10,7 +10,7 @@
            @dragenter.prevent
            @dragover.prevent
       >
-        <p>{{board.title}}</p>
+        <p>{{ board.title }}</p>
         <hr class="column-hr">
         <div v-for="task in board.tasks"
              :key="task.id"
@@ -27,91 +27,35 @@
           <hr class="title-hr">
           Автор: {{ task.author }}
           <br>
-          <span v-if="task.date !==''">  Дата добавления: {{dateFilter(task.date) }}</span>
-          <span v-if="task.startDate"> Дата начала: {{dateFilter(task.startDate)}} </span>
-          <span v-if="task.finishDate"> Дата завершения: {{this.dateFilter(task.finishDate) }} </span> <br>
-          Затрачено времени: {{task.usedTime}} часов
+          <span v-if="task.date !==''">  Дата добавления: {{ dateFilter(task.date) }}</span> <br>
+          <span v-if="board.title === 'В работе'"> Дата начала: {{ dateFilter(task.startDate) }} </span>
+          <span v-if="board.title === 'Завершено'"> Дата завершения: {{ this.dateFilter(task.finishDate) }} </span> <br>
+          <span v-if="board.title === 'Завершено'"> Затрачено времени: {{ task.usedTime }} часов</span>
         </div>
       </div>
-
-<!--&lt;!&ndash;         2 Колонка&ndash;&gt;-->
-<!--      <div class="drop-zone"-->
-<!--           v-for="board in boards"-->
-<!--           @drop="itemDrop($event, 2)"-->
-<!--           @dragenter.prevent-->
-<!--           @dragover.prevent-->
-<!--      >-->
-<!--        <p>{{board.title}}</p>-->
-<!--        <hr class="column-hr">-->
-<!--        <div v-for="task in board.tasks"-->
-<!--             :key="task.id"-->
-<!--             class="drag-item"-->
-<!--             draggable="true"-->
-<!--             @dragstart="itemDrag($event, task)"-->
-<!--        >-->
-<!--          Статус: {{ task.status }} <br>-->
-<!--          <hr>-->
-<!--          {{ task.title }}-->
-<!--          <hr class="title-hr">-->
-<!--          {{ task.text }}-->
-<!--          <hr class="title-hr">-->
-<!--          Автор: {{ task.author }}-->
-<!--          <br>-->
-<!--          <span v-if="task.date"> Дата добавления: {{dateFilter(task.date)}} </span> <br>-->
-<!--          <span v-if="task.startDate"> Дата начала: {{dateFilter(task.startDate)}} </span>-->
-<!--        </div>-->
-<!--      </div>-->
-
-<!--   3 Колонка   -->
-<!--      <div class="drop-zone"-->
-<!--           @drop="itemDrop($event, 3)"-->
-<!--           @dragenter.prevent-->
-<!--           @dragover.prevent-->
-<!--      >-->
-<!--        <p>Завершена</p>-->
-<!--        <hr class="column-hr">-->
-<!--        <div v-for="item in allCards"-->
-<!--             :key="item.id"-->
-<!--             class="drag-item"-->
-<!--             draggable="true"-->
-<!--             @dragstart="itemDrag($event, item)"-->
-<!--        >-->
-<!--          Статус: {{ item.status }} <br>-->
-<!--          <hr>-->
-<!--          {{ item.title }}-->
-<!--          <hr class="title-hr">-->
-<!--          {{ item.text }}-->
-<!--          <hr class="title-hr">-->
-<!--          Автор: {{ item.author }}<br>-->
-
-<!--          <span v-if="item.date"> Дата добавления: {{this.dateFilter(item.date) }} </span> <br>-->
-<!--          <span v-if="item.finishDate"> Дата завершения: {{this.dateFilter(item.finishDate) }} </span> <br>-->
-<!--           Затрачено времени: {{item.usedTime}} часов-->
-<!--        </div>-->
-<!--      </div>-->
     </div>
   </div>
 </template>
 
 <script>
 import AddForm from './AddForm';
-import {mapGetters, mapActions, mapMutations} from  'vuex'
+import {mapGetters, mapActions, mapMutations} from 'vuex'
 
 export default {
-  name:  'BoardPage',
-  components:{AddForm},
+  name:       'BoardPage',
+  components: {AddForm},
 
   mounted() {
     this.getTrelloData()
   },
 
 
-computed: {
+  computed: {
     ...mapGetters(['allTasks', 'allBoards']),
-  boards(){
+    boards() {
       return this.allBoards
+    },
   },
-},
 
   methods: {
     ...mapActions(['getTrelloData']),
@@ -130,29 +74,19 @@ computed: {
 
 
     itemDrag(event, task) {
-      console.log(task)
       event.dataTransfer.dropEffect    = 'move'
       event.dataTransfer.effectAllowed = 'move'
       event.dataTransfer.setData('taskId', task.id)
-      console.log(task.id)
     },
 
     itemDrop(event, boardId) {
       const taskId = event.dataTransfer.getData('taskId')
-      this.updateTask(taskId, boardId)
+      this.updateTask({taskId, boardId})
       this.saveTask()
 
     },
 
-    usedTime(dt2, dt1) {
-
-      let diff = (dt2.getTime() - dt1.getTime()) / 1000;
-      diff /= (60 * 60);
-      return Math.abs(Math.round(diff));
-
-    },
-
-    saveTask(){
+    saveTask() {
       const jsonTasks = JSON.stringify(this.allTasks)
       localStorage.setItem('tasks', jsonTasks)
 

@@ -1,10 +1,12 @@
+
 export default {
 	state: {
+		taskCounter: 1,
 		tasks: [{
 			author: "dasdas",
 			date: "2021-09-03T00:00:00.000Z",
 			finishDate: "2021-09-29T05:44:08.779Z",
-			id: 1,
+			id: 0,
 			board: 3,
 			startDate: "2021-09-29T05:43:44.391Z",
 			status: "Завершена",
@@ -13,18 +15,18 @@ export default {
 			usedTime: 0
 		}],
 		boards: [{
-			id:    1,
+			id:    0,
 			title: 'Создано',
 			tasks: []
 		},
 			{
-				id:    2,
+				id:    1,
 				title: 'В работе',
 				tasks: []
 
 			},
 			{
-				id:    3,
+				id:    2,
 				title: 'Завершено',
 				tasks: []
 			}]
@@ -32,13 +34,14 @@ export default {
 
 	actions: {
 		 getTrelloData(context){
-			const tasks = JSON.parse(localStorage.getItem('tasks'))
-			const boards = JSON.parse(localStorage.getItem('boards'))
-			context.commit('setAllTasksBoards', tasks, boards)
+			const tasks = JSON.parse(localStorage.getItem('tasks')) ?? [] //проверка на null
+			const boards = JSON.parse(localStorage.getItem('boards')) ?? []
+			 context.commit('setAllTasksBoards', {tasks, boards})
 		}
 	},
 	mutations: {
-		setAllTasksBoards(state, tasks, boards){
+		//второй аргумент(payload) - только один объект
+		setAllTasksBoards(state, {tasks, boards}){
 			state.tasks = tasks
 
 			if (0 === state.boards.length) {
@@ -46,28 +49,37 @@ export default {
 			}
 		},
 
-		updateTask(state, taskId, boardId) {
-			const task   = state.tasks.find((item) => task.id === +taskId)
+		updateTask(state, {taskId, boardId}) {
+
+			const task   = state.tasks.find((item) => item.id === +taskId)
 			task.board = boardId
 
-			if (boardId === 1) {
+
+			if (boardId === 0) {
 				task.status = "Создана"
 			}
-			else if (boardId === 2) {
+			else if (boardId === 1) {
 				task.status = "В работе"
 				task.startDate = new Date();
 			}
-			else if (boardId === 3) {
+			else if (boardId === 2) {
 				task.status = "Завершена"
 				task.finishDate = new Date();
-				task.usedTime = this.usedTime( new Date(task.finishDate), new Date(task.startDate));
+				let diff = (new Date(task.finishDate).getTime() - new Date(task.startDate).getTime()) / 1000;
+				diff /= (60 * 60);
+				task.usedTime = Math.abs(Math.round(diff));
 			}
 		},
-		addTask(state, newTask){
-			newTask.id = state.tasks.length;
-			state.tasks.push(newTask)
-		},
 
+
+
+		addTask(state, newTask){
+			newTask.id = state.taskCounter;
+			newTask.board = 0
+			state.tasks.push(newTask)
+			state.taskCounter += 1
+		},
+//почитать про мутации и геттеры(вьюх в целом)
 	},
 	getters:{
 		allTasks(state){
@@ -86,7 +98,8 @@ export default {
 
 		},
 		getTaskByBoardId:state => boardId =>{
-			return state.tasks.filter(task => task.board === boardId)
-		}
+			return state.tasks?.filter(task => task.board === boardId)
+		}             //      ? проверит tasks на null, если не пустая, то выполнит
+
 	}
 }

@@ -33,6 +33,8 @@ export default {
         author:    this.author,
         date:      this.date,
         startDate: this.startDate,
+        finishDate: this.finishDate
+
       })
     }
   }
