@@ -5,117 +5,118 @@
       <AddForm/>
       <!--   1 Колонка   -->
       <div class="drop-zone"
-           @drop="itemDrop($event, 1)"
+           v-for="board in allBoards"
+           @drop="itemDrop($event, board.id)"
            @dragenter.prevent
            @dragover.prevent
       >
-        <p>Создана</p>
+        <p>{{board.title}}</p>
         <hr class="column-hr">
-        <div v-for="item in getList(1)"
-             :key="item.id"
+        <div v-for="task in board.tasks"
+             :key="task.id"
              class="drag-item"
              draggable="true"
-             @dragstart="itemDrag($event, item)"
+             @dragstart="itemDrag($event, task)"
         >
 
-          Статус: {{ item.status }} <br>
+          Статус: {{ task.status }} <br>
           <hr>
-          {{ item.title }}
+          {{ task.title }}
           <hr class="title-hr">
-          {{ item.text }}
+          {{ task.text }}
           <hr class="title-hr">
-          Автор: {{ item.author }}
+          Автор: {{ task.author }}
           <br>
-          <span v-if="item.date !==''">  Дата добавления: {{dateFilter(item.date) }}</span>
-
+          <span v-if="task.date !==''">  Дата добавления: {{dateFilter(task.date) }}</span>
+          <span v-if="task.startDate"> Дата начала: {{dateFilter(task.startDate)}} </span>
+          <span v-if="task.finishDate"> Дата завершения: {{this.dateFilter(task.finishDate) }} </span> <br>
+          Затрачено времени: {{task.usedTime}} часов
         </div>
       </div>
 
-      <!--   2 Колонка   -->
-      <div class="drop-zone"
-           @drop="itemDrop($event, 2)"
-           @dragenter.prevent
-           @dragover.prevent
-      >
-        <p>В работе</p>
-        <hr class="column-hr">
-        <div v-for="item in getList(2)"
-             :key="item.id"
-             class="drag-item"
-             draggable="true"
-             @dragstart="itemDrag($event, item)"
-        >
-          Статус: {{ item.status }} <br>
-          <hr>
-          {{ item.title }}
-          <hr class="title-hr">
-          {{ item.text }}
-          <hr class="title-hr">
-          Автор: {{ item.author }}
-          <br>
-          <span v-if="item.date"> Дата добавления: {{dateFilter(item.date)}} </span> <br>
-          <span v-if="item.startDate"> Дата начала: {{dateFilter(item.startDate)}} </span>
-        </div>
-      </div>
+<!--&lt;!&ndash;         2 Колонка&ndash;&gt;-->
+<!--      <div class="drop-zone"-->
+<!--           v-for="board in boards"-->
+<!--           @drop="itemDrop($event, 2)"-->
+<!--           @dragenter.prevent-->
+<!--           @dragover.prevent-->
+<!--      >-->
+<!--        <p>{{board.title}}</p>-->
+<!--        <hr class="column-hr">-->
+<!--        <div v-for="task in board.tasks"-->
+<!--             :key="task.id"-->
+<!--             class="drag-item"-->
+<!--             draggable="true"-->
+<!--             @dragstart="itemDrag($event, task)"-->
+<!--        >-->
+<!--          Статус: {{ task.status }} <br>-->
+<!--          <hr>-->
+<!--          {{ task.title }}-->
+<!--          <hr class="title-hr">-->
+<!--          {{ task.text }}-->
+<!--          <hr class="title-hr">-->
+<!--          Автор: {{ task.author }}-->
+<!--          <br>-->
+<!--          <span v-if="task.date"> Дата добавления: {{dateFilter(task.date)}} </span> <br>-->
+<!--          <span v-if="task.startDate"> Дата начала: {{dateFilter(task.startDate)}} </span>-->
+<!--        </div>-->
+<!--      </div>-->
 
 <!--   3 Колонка   -->
-      <div class="drop-zone"
-           @drop="itemDrop($event, 3)"
-           @dragenter.prevent
-           @dragover.prevent
-      >
-        <p>Завершена</p>
-        <hr class="column-hr">
-        <div v-for="item in getList(3)"
-             :key="item.id"
-             class="drag-item"
-             draggable="true"
-             @dragstart="itemDrag($event, item)"
-        >
-          Статус: {{ item.status }} <br>
-          <hr>
-          {{ item.title }}
-          <hr class="title-hr">
-          {{ item.text }}
-          <hr class="title-hr">
-          Автор: {{ item.author }}<br>
+<!--      <div class="drop-zone"-->
+<!--           @drop="itemDrop($event, 3)"-->
+<!--           @dragenter.prevent-->
+<!--           @dragover.prevent-->
+<!--      >-->
+<!--        <p>Завершена</p>-->
+<!--        <hr class="column-hr">-->
+<!--        <div v-for="item in allCards"-->
+<!--             :key="item.id"-->
+<!--             class="drag-item"-->
+<!--             draggable="true"-->
+<!--             @dragstart="itemDrag($event, item)"-->
+<!--        >-->
+<!--          Статус: {{ item.status }} <br>-->
+<!--          <hr>-->
+<!--          {{ item.title }}-->
+<!--          <hr class="title-hr">-->
+<!--          {{ item.text }}-->
+<!--          <hr class="title-hr">-->
+<!--          Автор: {{ item.author }}<br>-->
 
-          <span v-if="item.date"> Дата добавления: {{this.dateFilter(item.date) }} </span> <br>
-          <span v-if="item.finishDate"> Дата завершения: {{this.dateFilter(item.finishDate) }} </span> <br>
-           Затрачено времени: {{item.usedTime}} часов
-        </div>
-      </div>
+<!--          <span v-if="item.date"> Дата добавления: {{this.dateFilter(item.date) }} </span> <br>-->
+<!--          <span v-if="item.finishDate"> Дата завершения: {{this.dateFilter(item.finishDate) }} </span> <br>-->
+<!--           Затрачено времени: {{item.usedTime}} часов-->
+<!--        </div>-->
+<!--      </div>-->
     </div>
   </div>
 </template>
 
 <script>
 import AddForm from './AddForm';
+import {mapGetters, mapActions, mapMutations} from  'vuex'
 
 export default {
   name:  'BoardPage',
-  // props: {
-  //   msg: String
-  // },
-  // data() {
-  //   return {
-  //     items:   [],
-  //     newCard: {
-  //       title:  '',
-  //       status: '',
-  //       text:   '',
-  //       author: '',
-  //       date:   '',
-  //       startDate:'',
-  //     }
-  //   };
-  // },
   components:{AddForm},
-  mounted() {
 
+  mounted() {
+    this.getTrelloData()
   },
 
+
+computed: {
+    ...mapGetters(['allTasks', 'allBoards']),
+  boards(){
+      return this.allBoards
+  },
+},
+
   methods: {
+    ...mapActions(['getTrelloData']),
+    ...mapMutations(['updateTask']),
+
     dateFilter(value, format = "date") {                                              //Фильтр для даты
       const opt = {};
       if (format.includes("date")) {
@@ -127,35 +128,19 @@ export default {
       return new Intl.DateTimeFormat("ru-RU", opt).format(new Date(value));
     },
 
-    // getList(list) {
-    //   return this.items.filter((item) => item.list === list)
-    // },
 
-
-    itemDrag(event, item) {
-      console.log(item)
+    itemDrag(event, task) {
+      console.log(task)
       event.dataTransfer.dropEffect    = 'move'
       event.dataTransfer.effectAllowed = 'move'
-      event.dataTransfer.setData('itemID', item.id)
+      event.dataTransfer.setData('taskId', task.id)
+      console.log(task.id)
     },
 
-    itemDrop(event, list) {
-      const itemID = event.dataTransfer.getData('itemID')
-      const item   = this.items.find((item) => item.id === +itemID)
-      item.list    = list
-
-      if (list === 1) {
-        item.status = "Создана"
-      }
-      else if (list === 2) {
-        item.status = "В работе"
-        item.startDate = new Date();
-      }
-      else if (list === 3) {
-        item.status = "Завершена"
-        item.finishDate = new Date();
-        item.usedTime = this.usedTime( new Date(item.finishDate), new Date(item.startDate));
-      }
+    itemDrop(event, boardId) {
+      const taskId = event.dataTransfer.getData('taskId')
+      this.updateTask(taskId, boardId)
+      this.saveTask()
 
     },
 
@@ -167,17 +152,14 @@ export default {
 
     },
 
-    // addTask() {
-    //   this.items.push({id: this.items.length, title: this.newCard.title, status: this.newCard.status, text: this.newCard.text, author: this.newCard.author, date: new Date(this.newCard.date), list: 1})
-    //   this.newCard.title  = '';
-    //   this.newCard.text   = '';
-    //   this.newCard.author = '';
-    //   this.newCard.date   = '';
-    //   this.newCard.startDate = '';
-    //   this.newCard.usedTime = '';
-    //   this.newCard.finishDate = '';
-    //   this.newCard.status = '';
-    // },
+    saveTask(){
+      const jsonTasks = JSON.stringify(this.allTasks)
+      localStorage.setItem('tasks', jsonTasks)
+
+      const jsonBoards = JSON.stringify(this.allBoards)
+      localStorage.setItem('boards', jsonBoards)
+    },
+
   },
 }
 </script>

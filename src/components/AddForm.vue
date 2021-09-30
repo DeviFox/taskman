@@ -1,14 +1,15 @@
 <template>
-  <div class="add-window">
+  <form class="add-window" @submit.prevent="submit">
     <input id="add-form" class="add-form" v-model="title" placeholder="Название">
     <input class="add-form" v-model="text" placeholder="Описание">
     <input class="add-form" v-model="author" placeholder="Автор">
     <input class="add-form" v-model="date" type="date">
     <button class="add-btn" type="submit">+</button>
-  </div>
+  </form>
 </template>
 
 <script>
+import {mapMutations} from 'vuex'
 export default {
   name: "AddForm.vue",
   data() {
@@ -22,11 +23,21 @@ export default {
       }
     },
   methods:{
+    ...mapMutations(['addTask']),
     submit(){
-      
+      console.log(this);
+      this.addTask({
+        title:     this.title,
+        status:    this.status,
+        text:      this.text,
+        author:    this.author,
+        date:      this.date,
+        startDate: this.startDate,
+      })
     }
   }
-  }
+}
+
 </script>
 
 <style scoped lang="scss">
@@ -37,6 +48,7 @@ export default {
   flex-direction: column;
   left:           0;
   margin:         10px;
+
 }
 
 .add-form {
