@@ -10,32 +10,33 @@
 
 <script>
 import {mapMutations} from 'vuex'
+
 export default {
   name: "AddForm.vue",
   data() {
     return {
-        title:     '',
-        status:    '',
-        text:      '',
-        author:    '',
-        date:      '',
-        startDate: '',
-      }
-    },
-  methods:{
+      title:     '',
+      status:    '',
+      text:      '',
+      author:    '',
+      date:      '',
+      startDate: '',
+    }
+  },
+  methods: {
     ...mapMutations(['addTask']),
-    submit(){
-      console.log(this);
+    submit() {
       this.addTask({
-        title:     this.title,
-        status:    this.status,
-        text:      this.text,
-        author:    this.author,
-        date:      this.date,
-        startDate: this.startDate,
-        finishDate: this.finishDate
-
-      })
+        title:      this.title,
+        status:     this.status,
+        text:       this.text,
+        author:     this.author,
+        date:       this.date,
+        startDate:  this.startDate,
+        finishDate: this.finishDate,
+      });
+      this.saveTask()
+      this.title = this.text = this.author = this.date = '';
     }
   }
 }
@@ -45,11 +46,11 @@ export default {
 <style scoped lang="scss">
 .add-window {
   background-color: white;
-  position:       absolute;
-  display:        flex;
-  flex-direction: column;
-  left:           0;
-  margin:         10px;
+  position:         absolute;
+  display:          flex;
+  flex-direction:   column;
+  left:             0;
+  margin:           10px;
 
 }
 
@@ -58,6 +59,8 @@ export default {
   margin-top:    5px;
   border-radius: 6px;
   border-color:  #42b983;
+  color: gray;
+  border-style: solid
 
 }
 
@@ -68,5 +71,6 @@ export default {
   width:         30px;
   border-radius: 7px;
   border-color:  #42b983;
+  border-style: solid
 }
 </style>

@@ -1,4 +1,4 @@
-# taskman
+# nedotrello
 
 ## Project setup
 ```

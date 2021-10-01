@@ -31,6 +31,7 @@
           <span v-if="board.title === 'В работе'"> Дата начала: {{ dateFilter(task.startDate) }} </span>
           <span v-if="board.title === 'Завершено'"> Дата завершения: {{ this.dateFilter(task.finishDate) }} </span> <br>
           <span v-if="board.title === 'Завершено'"> Затрачено времени: {{ task.usedTime }} часов</span>
+          <button class="del-btn" @click="delTask(task.id)"  type="submit">-</button>
         </div>
       </div>
     </div>
@@ -58,7 +59,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['getTrelloData']),
+    ...mapActions(['getTrelloData', 'delTask']),
     ...mapMutations(['updateTask']),
 
     dateFilter(value, format = "date") {                                              //Фильтр для даты
@@ -85,6 +86,7 @@ export default {
       this.saveTask()
 
     },
+
 
     saveTask() {
       const jsonTasks = JSON.stringify(this.allTasks)
@@ -147,7 +149,16 @@ export default {
   height:           2px;
   background-color: #42b983;
 }
-
+.del-btn {
+  margin-top:    5px;
+  height:        20px;
+  width:         50px;
+  border-radius: 5px;
+  background-color: #42b983;
+  border-color: ghostwhite;
+  border-style: solid;
+  border-width: 1px
+}
 
 .drag-item {
   border-radius:    5px;
