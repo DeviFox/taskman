@@ -1,6 +1,5 @@
 export default {
 	state: {
-		taskCounter: 1,
 		tasks:       [{
 			author:     "Devifox",
 			date:       "2021-09-03T00:00:00.000Z",
@@ -13,11 +12,12 @@ export default {
 			title:      "DNS Vuex practice",
 			usedTime:   0
 		}],
-		boards:      [{
-			id:    0,
-			title: 'Создано',
-			tasks: []
-		},
+		boards:      [
+			{
+				id:    0,
+				title: 'Создано',
+				tasks: []
+			},
 			{
 				id:    1,
 				title: 'В работе',
@@ -28,7 +28,8 @@ export default {
 				id:    2,
 				title: 'Завершено',
 				tasks: []
-			}]
+			},
+		],
 	},
 
 	actions:   {
@@ -42,7 +43,6 @@ export default {
 		}
 	},
 	mutations: {
-		//второй аргумент(payload) - только один объект
 		setAllTasksBoards(state, {tasks, boards}) {
 			state.tasks = tasks
 
@@ -51,6 +51,7 @@ export default {
 			}
 		},
 
+		// Не получилось прикрутить сохранение состояния доски в localstorage при добавлении/удалении карточек, сохраняет после D&D любой карточки ¯\_(ツ)_/¯
 		updateTask(state, {taskId, boardId}) {
 			const task = state.tasks.find((item) => item.id === +taskId)
 			task.board = boardId
@@ -73,11 +74,11 @@ export default {
 		},
 
 		addTask(state, newTask) {
-			// newTask.id    = state.tasks.length + 1;
-			newTask.id    = state.taskCounter
+			newTask.id    = state.tasks.length + 1;
+			// newTask.id    = state.taskCounter
 			newTask.board = 0
 			state.tasks.push(newTask)
-			state.taskCounter += 1
+				// state.taskCounter += 1
 
 		},
 		deleteTask(state, id) {
@@ -97,15 +98,11 @@ export default {
 					boards.push(board)
 				})
 			}
-
 			return boards
-
-
-
 		},
 		getTaskByBoardId: state => boardId => {
 			return state.tasks?.filter(task => task.board === boardId)
-		}             //      ? проверит tasks на null, если не пустая, то выполнит
+		}             //      ? проверит tasks на null
 
 	}
 }

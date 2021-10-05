@@ -15,12 +15,13 @@ export default {
   name: "AddForm.vue",
   data() {
     return {
-      title:     '',
-      status:    '',
-      text:      '',
-      author:    '',
-      date:      '',
-      startDate: '',
+      title:      '',
+      status:     '',
+      text:       '',
+      author:     '',
+      date:       '',
+      startDate:  '',
+      finishDate: '',
     }
   },
   methods: {
@@ -35,7 +36,6 @@ export default {
         startDate:  this.startDate,
         finishDate: this.finishDate,
       });
-      this.saveTask()
       this.title = this.text = this.author = this.date = '';
     }
   }
@@ -44,6 +44,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
 .add-window {
   background-color: white;
   position:         absolute;
@@ -59,8 +60,8 @@ export default {
   margin-top:    5px;
   border-radius: 6px;
   border-color:  #42b983;
-  color: gray;
-  border-style: solid
+  color:         gray;
+  border-style:  solid
 
 }
 
@@ -71,6 +72,6 @@ export default {
   width:         30px;
   border-radius: 7px;
   border-color:  #42b983;
-  border-style: solid
+  border-style:  solid
 }
 </style>

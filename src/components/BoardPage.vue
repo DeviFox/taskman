@@ -3,7 +3,6 @@
 
     <div class="wrapper">
       <AddForm/>
-      <!--   1 Колонка   -->
       <div class="drop-zone"
            v-for="board in allBoards"
            @drop="itemDrop($event, board.id)"
@@ -31,7 +30,7 @@
           <span v-if="board.title === 'В работе'"> Дата начала: {{ dateFilter(task.startDate) }} </span>
           <span v-if="board.title === 'Завершено'"> Дата завершения: {{ this.dateFilter(task.finishDate) }} </span> <br>
           <span v-if="board.title === 'Завершено'"> Затрачено времени: {{ task.usedTime }} часов</span>
-          <button class="del-btn" @click="delTask(task.id)"  type="submit">-</button>
+          <button class="del-btn" @click="delTask(task.id)" type="submit">-</button>
         </div>
       </div>
     </div>
@@ -84,7 +83,6 @@ export default {
       const taskId = event.dataTransfer.getData('taskId')
       this.updateTask({taskId, boardId})
       this.saveTask()
-
     },
 
 
@@ -149,15 +147,16 @@ export default {
   height:           2px;
   background-color: #42b983;
 }
+
 .del-btn {
-  margin-top:    5px;
-  height:        20px;
-  width:         50px;
-  border-radius: 5px;
+  margin-top:       5px;
+  height:           20px;
+  width:            50px;
+  border-radius:    5px;
   background-color: #42b983;
-  border-color: ghostwhite;
-  border-style: solid;
-  border-width: 1px
+  border-color:     ghostwhite;
+  border-style:     solid;
+  border-width:     1px
 }
 
 .drag-item {

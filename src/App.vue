@@ -1,6 +1,5 @@
 <template>
   <Navbar></Navbar>
-
   <BoardPage></BoardPage>
 
 </template>
